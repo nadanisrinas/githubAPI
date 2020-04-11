@@ -2,8 +2,8 @@
 search user repositories from github api. Built using reactJS, and axios 
 
 how to install : 
-NPM INSTALL 
+# NPM INSTALL 
 for install packages using  nodejs
 
-NPM START 
+# NPM START 
 for run server
