@@ -1,5 +1,4 @@
 import React,{Component} from 'react'
-import ReactDOM from'react-dom'
 import axios from 'axios'
 import Search from './search'
 import Navbar from './navbar'
@@ -17,30 +16,27 @@ class App extends React.Component{
     }
     
 
-    onSearchSubmit(term){
+    onSearchSubmit = async term => {
         console.log(term);
-        axios.get(`https://api.github.com/users/${term}`)
-        .then(resolve => {
-            let user = resolve.data;
-            if (this.setState) {
-                this.setState({userProfileAvatar : user.avatar_url});
-            this.setState({userName : user.userName});
-              }
-        })
+        await axios.all([
+            axios.get(`https://api.github.com/users/${term}`),
+            axios.get(`https://api.github.com/users/${term}/repos`)
+
+        ]).then(axios.spread((user,repos) => {
+            let userData = user.data;
+            let reposData = repos;
+            console.log(reposData.data.length);
+            let reposList = [];
+            for(let i = 0, l = reposData.data.length; i < l; i++) {
+                reposList.push(reposData.data[i]["name"]);
+            }
+            this.setState({userProfileAvatar : userData.avatar_url});
+            this.setState({userName : userData.login});
+            this.setState({repoList : reposList.join(",")});
             
-        axios.get(`https://api.github.com/users/${term}/repos`)
-            .then(response => {
-                let repos = response.data;
-                repos.forEach(item => {
-                    if (this.setState) {
-                        this.setState({repoList : item.name});
-                        console.log('adaaaa');
-                }
-                });
-            })
-            .catch((response => {
-                alert(`username ${term} tidak ditemukan`)
-            }));
+        })).catch(err => {
+            alert(`username ${term} tidak ditemukan ${err}`);
+        });
     }
     render(){
         return(

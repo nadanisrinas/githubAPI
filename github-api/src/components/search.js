@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 class Search extends React.Component{
    state = {term : ''};
@@ -8,8 +7,7 @@ class Search extends React.Component{
     e.preventDefault();
     this.props.onSubmit(this.state.term);
    }
-
-
+   
     render(){
         return(
             <form onSubmit={this.onFormSubmit} className="input-group mb-3">
